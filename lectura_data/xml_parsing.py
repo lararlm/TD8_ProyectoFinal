@@ -47,8 +47,8 @@ def xml_data_extractor(file_path: str):
 
 
 # file_path_lari = 'C:/Users/44482978/Desktop/TD8/TD8_ProyectoFinal/mapas/pol.01.xml'
-file_path_bony = 'C:/Users/valen/OneDrive/Escritorio/Bony/Di tella/TD8FINAL/TD8_ProyectoFinal/mapas/pol.1s.07.xml'
-file_path_bony_2 = 'C:/Users/valen/OneDrive/Escritorio/Bony/Di tella/TD8FINAL/TD8_ProyectoFinal/mapas/Entrada_v2.xml'
+
+file_path_bony = 'C:/Users/valen/OneDrive/Escritorio/Bony/Di tella/TD8FINAL/TD8_ProyectoFinal/mapas/pol.01.xml'
 yacimiento_coords, pads_data, restricciones_data , angulo= xml_data_extractor(file_path_bony)
 
 print("Yacimiento Coordinates:", yacimiento_coords)
@@ -57,7 +57,8 @@ print("Restricciones Data:", restricciones_data)
 
 
 # rectangles = [[pads_data[0][0], pads_data[0][1], 10 , 15]]
+rectangles = []
 
 # print(rectangles)
 
-# fun_generacion_mapa(yacimiento_coords,restricciones_data, rectangles)
+fun_generacion_mapa(yacimiento_coords,restricciones_data, rectangles)
