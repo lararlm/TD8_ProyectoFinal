@@ -46,10 +46,10 @@ def xml_data_extractor(file_path: str):
 
 
 
-# file_path_lari = 'C:/Users/44482978/Desktop/TD8/TD8_ProyectoFinal/mapas/pol.01.xml'
+file_path_lari = 'C:/Users/44482978/Desktop/TD8/TD8_ProyectoFinal/mapas/pol.01.xml'
 
-file_path_bony = 'C:/Users/valen/OneDrive/Escritorio/Bony/Di tella/TD8FINAL/TD8_ProyectoFinal/mapas/pol.01.xml'
-yacimiento_coords, pads_data, restricciones_data , angulo= xml_data_extractor(file_path_bony)
+#file_path_bony = 'C:/Users/valen/OneDrive/Escritorio/Bony/Di tella/TD8FINAL/TD8_ProyectoFinal/mapas/pol.01.xml'
+yacimiento_coords, pads_data, restricciones_data , angulo= xml_data_extractor(file_path_lari)
 
 print("Yacimiento Coordinates:", yacimiento_coords)
 print("Pads Data (Largo, Ancho, Angulo):", pads_data , angulo)
