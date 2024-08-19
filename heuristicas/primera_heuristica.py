@@ -2,6 +2,7 @@ import matplotlib.patches
 import matplotlib.pyplot
 import numpy 
 import math
+from shapely.geometry import Point, Polygon 
 
 def generate_panel_arrays(nx, ny, panel_size, indentation, offset_x, offset_y):
     (dx, dy) = panel_size
@@ -80,10 +81,55 @@ def solve(polygon, panel_size):
     matplotlib.pyplot.axis('equal')
     matplotlib.pyplot.show()
 
-    return max_panel, best_indentation, best_offset_x, best_offset_y
+    return best_panels, best_array
+
+def check_center(center, restrictions):
+    is_valid = True
+    for rest in restrictions:
+        center_point = Point(center)
+        fig_rest = Polygon(rest)
+        is_in_rest = center_point.within(fig_rest)
+        is_valid = is_valid and is_in_rest
+    return is_valid
+
+
+def check_panels(panels,panel_size, restrictions):
+    width, heigth = panel_size
+    true_panels = []
+    for i in range(len(panels)):
+        center = (panels[i][0] + width/2, panels[i][1] + heigth/2)
+        if check_center(center,restrictions):
+            true_panels.append(panels[i])
+    return true_panels
+
+
 
 if __name__ == "__main__":
     panel_size = (2, 4)
     polygon = [(10.0, 0.0), (0.0, 16.0), (0.0, 29.0), (12.0, 33.0), (33.0, 33.0), (46.0, 16.0), (46.0, 6.0), (38.0, 0.0), (10.0, 0.0)]
+    restrictions = [[(9.0, 22.0), (9.0, 25.0), (12.0, 28.0), (16.0, 29.0), (17.0, 27.0), (12.0, 23.0), (9.0, 22.0)], [(25.0, 22.0), (27.0, 25.0), (29.0, 27.0), (30.0, 25.0), (27.0, 21.0), (25.0, 22.0)], [(25.0, 22.0), (27.0, 21.0), (29.0, 17.0), (27.5, 15.0), (25.0, 17.0), (25.0, 22.0)], [(16.0, 11.0), (17.0, 13.0), (24.0, 8.0), (27.0, 5.0), (26.0, 4.0), (19.0, 7.0), (16.0, 11.0)]]
 
-    solve(polygon, panel_size)  
+    panels, arrays = solve(polygon, panel_size)
+    true_panels = check_panels(panels, panel_size, restrictions)
+
+    rotated_polygon = numpy.array(polygon)
+    min_x = rotated_polygon[:, 0].min()
+    min_y = rotated_polygon[:, 1].min()
+    rotated_polygon[:, 0] -= (min_x - 1)
+    rotated_polygon[:, 1] -= (min_y - 1)
+    max_x = rotated_polygon[:, 0].max()      
+    max_y = rotated_polygon[:, 1].max()
+
+    plot_polygon(rotated_polygon)
+    plot_rectangles(arrays, panel_size)
+    plot_rectangles(true_panels, panel_size, color='k', facecolor='lime')
+    matplotlib.pyplot.axis('equal')
+    matplotlib.pyplot.show()
+
+
+
+    
+
+
+
+      
