@@ -28,7 +28,7 @@ def fun_generacion_mapa(yacimiento_coords, restricciones_data, rectangles, rect_
             bottom_left_y = center_y - height/2
             # Create the rectangle patch
             rectangle = patches.Rectangle((bottom_left_x, bottom_left_y), width, height,
-                                          linewidth=1, edgecolor='g', facecolor='g')
+                                          linewidth=1, edgecolor='g', facecolor='y')
             plt.gca().add_patch(rectangle)
             plt.plot(center_x, center_y, 'rx', label='Center' if i == 0 else "")
 

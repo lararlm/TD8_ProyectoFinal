@@ -1,5 +1,4 @@
 import xml.etree.ElementTree as ET
-from generacion_mapa import fun_generacion_mapa
 
 def xml_data_extractor(file_path: str):
     # Parsing del archivo XML
@@ -27,7 +26,7 @@ def xml_data_extractor(file_path: str):
             largo = float(pad.get('Largo').replace(",", "."))
             ancho = float(pad.get('Ancho').replace(",", "."))
             # Guardamos la información en la lista
-            semilla_data.append((largo, ancho))
+            semilla_data.append((ancho, largo))
         
     # Extraemos la información de los polígonos obstáculo
     for restriccion in root.findall(".//Restricción"):
@@ -46,19 +45,17 @@ def xml_data_extractor(file_path: str):
 
 
 
-# file_path_lari = 'C:/Users/44482978/Desktop/TD8/TD8_ProyectoFinal/mapas/pol.01.xml'
+# # file_path_lari = 'C:/Users/44482978/Desktop/TD8/TD8_ProyectoFinal/mapas/pol.01.xml'
 
-file_path_bony = 'C:/Users/valen/OneDrive/Escritorio/Bony/Di tella/TD8FINAL/TD8_ProyectoFinal/mapas/pol.01.xml'
-yacimiento_coords, pads_data, restricciones_data , angulo= xml_data_extractor(file_path_bony)
+# file_path_bony = 'C:/Users/valen/OneDrive/Escritorio/Bony/Di tella/TD8FINAL/TD8_ProyectoFinal/mapas/pol.01.xml'
+# yacimiento_coords, pads_data, restricciones_data , angulo= xml_data_extractor(file_path_bony)
 
-print("Yacimiento Coordinates:", yacimiento_coords)
-print("Pads Data (Largo, Ancho, Angulo):", pads_data , angulo)
-print("Restricciones Data:", restricciones_data)
+# print("Yacimiento Coordinates:", yacimiento_coords)
+# print("Pads Data (Largo, Ancho, Angulo):", pads_data , angulo)
+# print("Restricciones Data:", restricciones_data)
 
 
 # rectangles = [[pads_data[0][0], pads_data[0][1], 10 , 15]]
 rectangles = []
 
 # print(rectangles)
-
-fun_generacion_mapa(yacimiento_coords,restricciones_data, rectangles)
