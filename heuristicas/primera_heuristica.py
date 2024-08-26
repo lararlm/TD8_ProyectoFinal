@@ -1,6 +1,7 @@
 import matplotlib.patches
 import matplotlib.pyplot
 import numpy as np  
+import csv
 import math
 from shapely.geometry import Point, Polygon 
 import sys
@@ -46,10 +47,11 @@ def contains_rectangles(Array, panel_size, polygon):
     return okay_panels
 
 
-def solve(polygon, panel_size):
+def solve(polygon, panel_size, xml_file_path, restrictions):
     """Search for different offsets to find the solution that maximizes the number of panels."""
+    solution_num = 0
     max_panel = 0 
-    best_panels, best_array, best_indentation, best_offset_x, best_offset_y = None, None, None, None, None
+    best_panels, best_array, best_indentation, best_offset_x, best_offset_y, best_centers = None, None, None, None, None, None
 
     # Use the original polygon without modification
     original_polygon = np.array(polygon)
@@ -71,27 +73,48 @@ def solve(polygon, panel_size):
                 # Generate the array of possible panels
                 Array = generate_panel_arrays(n_x, n_y, panel_size, indentation, offset_x, offset_y)
                 okay_panels = contains_rectangles(Array, panel_size, original_polygon)
+                okay_panels, okay_centers = check_panels(okay_panels, panel_size, restrictions)
 
                 if len(okay_panels) > max_panel: 
                     max_panel = len(okay_panels)
                     best_indentation, best_offset_x, best_offset_y = indentation, offset_x, offset_y
+                    best_centers = okay_centers
                     best_panels = okay_panels
                     best_array = Array 
+
+                    filename = "Solution_" + str(solution_num) + "1st"+ ".csv" 
+                    folder_path = os.path.dirname(xml_file_path)
+                    folder_name = os.path.splitext(os.path.basename(xml_file_path))[0]
+                    csv_folder_path = os.path.join(folder_path, folder_name)
+                    os.makedirs(csv_folder_path, exist_ok=True)
+                    csv_filename = os.path.join(csv_folder_path, filename)
+
+                    with open(csv_filename, mode='w', newline='') as file:
+                        writer = csv.writer(file)
+                        
+                        # Optionally write a header
+                        writer.writerow(["Center_X", "Center_Y"])
+                        
+                        # Write each coordinate to the file
+                        writer.writerows(best_centers)
+
+                    solution_num+=1
                     
                     print("Maximal number of panels is", max_panel)
+
                     print("Indentation is {}, offset is ({}, {})".
                            format(best_indentation, best_offset_x, best_offset_y))
 
-    return best_panels, best_array
+    return best_panels, best_array, best_centers
 
 def check_center(center, restrictions):
     for rest in restrictions:
         center_point = Point(center)
         fig_rest = Polygon(rest)
-        is_in_rest = not center_point.within(fig_rest)
+        is_in_rest = center_point.within(fig_rest)
         if is_in_rest:
-            return True
-    return False
+            return False
+    return True
 
 
 def check_panels(panels,panel_size, restrictions):
@@ -109,20 +132,12 @@ def check_panels(panels,panel_size, restrictions):
 
 if __name__ == "__main__":
 
-    
+    # file_path_bony = 'C:/Users/valen/OneDrive/Escritorio/Bony/Di tella/TD8FINAL/TD8_ProyectoFinal/mapas/pol.01.xml'
     file_path_bony = 'C:/Users/valen/OneDrive/Escritorio/Bony/Di tella/TD8FINAL/TD8_ProyectoFinal/mapas/Entrada_v2.xml'
-    polygon, pads_data, restrictions , angulo= xml_data_extractor(file_path_bony)
+    polygon, pads_data, restrictions , angulo = xml_data_extractor(file_path_bony)
     print(pads_data)
-    # panel_size_s = (2, 4)
-    # panel_size_m = (5, 10)
-    # polygon = [(10.0, 0.0), (0.0, 16.0), (0.0, 29.0), (12.0, 33.0), (33.0, 33.0), (46.0, 16.0), (46.0, 6.0), (38.0, 0.0), (10.0, 0.0)]
-    # restrictions = [[(9.0, 22.0), (9.0, 25.0), (12.0, 28.0), (16.0, 29.0), (17.0, 27.0), (12.0, 23.0), (9.0, 22.0)], [(25.0, 22.0), (27.0, 25.0), (29.0, 27.0), (30.0, 25.0), (27.0, 21.0), (25.0, 22.0)], [(25.0, 22.0), (27.0, 21.0), (29.0, 17.0), (27.5, 15.0), (25.0, 17.0), (25.0, 22.0)], [(16.0, 11.0), (17.0, 13.0), (24.0, 8.0), (27.0, 5.0), (26.0, 4.0), (19.0, 7.0), (16.0, 11.0)]]
 
-
-    panels, arrays = solve(polygon, pads_data[0])
-
-    true_panels, true_centers = check_panels(panels, pads_data[0], restrictions)
-
+    true_panels, arrays, true_centers = solve(polygon, pads_data[0], file_path_bony, restrictions)
     fun_generacion_mapa(polygon,restrictions,true_centers,pads_data[0])
 
     

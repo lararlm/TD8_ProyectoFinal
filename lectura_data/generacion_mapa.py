@@ -43,3 +43,4 @@ def fun_generacion_mapa(yacimiento_coords, restricciones_data, rectangles, rect_
     # Display the plot
     plt.grid(True)
     plt.show()
+
