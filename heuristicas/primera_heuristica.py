@@ -139,9 +139,3 @@ if __name__ == "__main__":
 
     true_panels, arrays, true_centers = solve(polygon, pads_data[0], file_path_bony, restrictions)
     fun_generacion_mapa(polygon,restrictions,true_centers,pads_data[0])
-
-    
-
-
-
-      
