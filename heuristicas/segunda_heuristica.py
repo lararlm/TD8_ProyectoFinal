@@ -1,8 +1,5 @@
-import matplotlib.patches
-import matplotlib.pyplot
 import numpy as np
 import random  
-import csv
 import math
 from shapely.geometry import Point, Polygon 
 import sys
@@ -10,7 +7,9 @@ import os
 sys.path.append(os.path.abspath("TD8_ProyectoFinal/"))
 from lectura_data.generacion_mapa import fun_generacion_mapa
 from lectura_data.xml_parsing import xml_data_extractor
+from lectura_data.analisis import check_availability
 from triangulator.ear_clipping_method import triangulate
+
 
 def initialize_heuristic(polygon, panel_size, restriccions, xml_file_path):
     triangles = triangulate(polygon)
@@ -55,49 +54,6 @@ def point_on_triangle(pt1, pt2, pt3):
     return (s * pt1[0] + t * pt2[0] + u * pt3[0],
             s * pt1[1] + t * pt2[1] + u * pt3[1])
 
-
-def check_availability(center, center_size, pads_data, polygon, restrictions, rectangles):
-    # Step 1: Check if the rectangle is fully inside the polygon
-    dx, dy = center_size
-    x, y = center
-    x_bl = x - dx / 2
-    y_bl = y - dy / 2
-    bbpath = matplotlib.path.Path(polygon) 
-    result = bbpath.contains_points([
-        (x_bl, y_bl),              
-        (x_bl + dx, y_bl),          
-        (x_bl, y_bl + dy),          
-        (x_bl + dx, y_bl + dy)     
-    ])
-    if not np.all(result):
-        return False
-    
-    # Step 2: Check if the center is within any restriction areas
-    for rest in restrictions:
-        center_point = Point(center)
-        fig_rest = Polygon(rest)
-        if center_point.within(fig_rest):
-            return False
-    
-    # Step 3: Check if the rectangle does not overlap with any other rectangles in the list
-    width1, height1 = center_size
-    left1 = x - width1 / 2
-    right1 = x + width1 / 2
-    top1 = y - height1 / 2
-    bottom1 = y + height1 / 2
-    for i in range(len(rectangles)): 
-        for center2 in rectangles[i]:
-            width1, height1 = pads_data[i]
-            x2, y2 = center2
-            left2 = x2 - width1 / 2
-            right2 = x2 + width1 / 2
-            top2 = y2 - height1 / 2
-            bottom2 = y2 + height1 / 2
-            
-            if not (left1 >= right2 or left2 >= right1 or top1 >= bottom2 or top2 >= bottom1):
-                return False
-        
-    return True
 
 
 if __name__ == "__main__":
