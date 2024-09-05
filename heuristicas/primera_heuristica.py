@@ -137,5 +137,5 @@ if __name__ == "__main__":
     polygon, pads_data, restrictions , angulo = xml_data_extractor(file_path_bony)
     print(pads_data)
 
-    true_panels, arrays, true_centers = solve(polygon, pads_data[0], file_path_bony, restrictions)
-    fun_generacion_mapa(polygon,restrictions,true_centers,pads_data[0])
+    true_panels, arrays, true_centers = solve(polygon, pads_data, file_path_bony, restrictions)
+    fun_generacion_mapa(polygon,restrictions,true_centers,pads_data)

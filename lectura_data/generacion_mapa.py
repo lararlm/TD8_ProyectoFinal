@@ -18,19 +18,20 @@ def fun_generacion_mapa(yacimiento_coords, restricciones_data, rectangles, rect_
             plt.plot(restriccion_x, restriccion_y, 'ro-')
 
     # Plot Pads as rectangles
-    for i, rect in enumerate(rectangles):
-        if rect:  # Ensure the rectangle data is not empty
-            width, height = rect_size
-            # Expecting rect to be a tuple or list: (center_x, center_y, width, height)
-            # Calculate the bottom left corner of the rectangle
-            center_x, center_y = rect
-            bottom_left_x = center_x - width/2
-            bottom_left_y = center_y - height/2
-            # Create the rectangle patch
-            rectangle = patches.Rectangle((bottom_left_x, bottom_left_y), width, height,
-                                          linewidth=1, edgecolor='g', facecolor='y')
-            plt.gca().add_patch(rectangle)
-            plt.plot(center_x, center_y, 'rx', label='Center' if i == 0 else "")
+    for n in range(len(rectangles)):
+        for i, rect in enumerate(rectangles[n]):
+            if rect:  # Ensure the rectangle data is not empty
+                width, height = rect_size[n]
+                # Expecting rect to be a tuple or list: (center_x, center_y, width, height)
+                # Calculate the bottom left corner of the rectangle
+                center_x, center_y = rect
+                bottom_left_x = center_x - width/2
+                bottom_left_y = center_y - height/2
+                # Create the rectangle patch
+                rectangle = patches.Rectangle((bottom_left_x, bottom_left_y), width, height,
+                                            linewidth=1, edgecolor='g', facecolor='y')
+                plt.gca().add_patch(rectangle)
+                plt.plot(center_x, center_y, 'rx', label='Center' if i == 0 else "")
 
     # Optionally, you can plot Semilla (Pads) information as rectangles or points
     # Here, we'll plot them as points
