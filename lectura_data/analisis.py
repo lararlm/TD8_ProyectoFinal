@@ -2,8 +2,6 @@ import matplotlib.patches
 import matplotlib.pyplot
 import numpy as np
 from shapely.geometry import Point, Polygon 
-from triangulator.ear_clipping_method import triangulate
-
 
 def contains_rectangle(x, y, panel_size, polygon):
     (dx, dy) = panel_size
@@ -82,25 +80,17 @@ def check_rectangles(center, center_size, pads_data, rectangles):
                 return False
     return True
 
+
 def calculate_area(polygon, rectangles, panel_size):
-    triangles = triangulate(polygon)
-    areas = []
-    for trian in triangles:
-        t_area = 0.5 * abs(
-            trian[0][0] * (trian[1][1] - trian[2][1]) +
-            trian[1][0] * (trian[2][1] - trian[0][1]) +
-            trian[2][0] * (trian[0][1] - trian[1][1])
-        )
-        areas.append(t_area)
-    cover_area = 0
+    area_polygon = Polygon(polygon)
+    total_area = area_polygon.area
     quantity_rect = []
-    total_area = sum(areas)
+    cover_area = 0
+
     for i in range(len(rectangles)):
         aux_rects = len(rectangles[i])
         quantity_rect.append(aux_rects)
-        print(panel_size[i])
-        cover_area += panel_size[i][0]*panel_size[i][1]*aux_rects
-    print(f"Rectangles: {quantity_rect} Area covered: {cover_area/total_area}")     
+        cover_area += panel_size[i][0] * panel_size[i][1] * aux_rects
 
-    
-        
+    print(f"Rectangles: {quantity_rect} Area covered: {cover_area / total_area}")     
+    return cover_area / total_area

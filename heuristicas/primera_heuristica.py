@@ -3,6 +3,7 @@ import matplotlib.pyplot
 import numpy as np  
 import csv
 import math
+from tqdm import tqdm
 from shapely.geometry import Point, Polygon 
 import sys
 import os
@@ -47,23 +48,23 @@ def solve(polygon, actual_panel, xml_file_path, restrictions, rectangles, panel_
                     best_panels = okay_panels
                     best_array = Array 
 
-                    filename = "Solution_" + str(solution_num) + "1st"+ ".csv" 
-                    folder_path = os.path.dirname(xml_file_path)
-                    folder_name = os.path.splitext(os.path.basename(xml_file_path))[0]
-                    csv_folder_path = os.path.join(folder_path, folder_name)
-                    os.makedirs(csv_folder_path, exist_ok=True)
-                    csv_filename = os.path.join(csv_folder_path, filename)
+                    # filename = "Solution_" + str(solution_num) + "1st"+ ".csv" 
+                    # folder_path = os.path.dirname(xml_file_path)
+                    # folder_name = os.path.splitext(os.path.basename(xml_file_path))[0]
+                    # csv_folder_path = os.path.join(folder_path, folder_name)
+                    # os.makedirs(csv_folder_path, exist_ok=True)
+                    # csv_filename = os.path.join(csv_folder_path, filename)
 
-                    with open(csv_filename, mode='w', newline='') as file:
-                        writer = csv.writer(file)
+                    # with open(csv_filename, mode='w', newline='') as file:
+                    #     writer = csv.writer(file)
                         
-                        # Optionally write a header
-                        writer.writerow(["Center_X", "Center_Y"])
+                    #     # Optionally write a header
+                    #     writer.writerow(["Center_X", "Center_Y"])
                         
-                        # Write each coordinate to the file
-                        writer.writerows(best_centers)
+                    #     # Write each coordinate to the file
+                    #     writer.writerows(best_centers)
 
-                    solution_num+=1
+                    # solution_num+=1
                     
                     print("Maximal number of panels is", max_panel)
 
@@ -78,19 +79,6 @@ def generate_panel_arrays(nx, ny, panel_size, indentation, offset_x, offset_y):
              for i in range(nx)
              for j in range(ny)]
     return Array 
-
-def plot_rectangle(x, y, dx, dy, color='r', facecolor='none'):
-    Xs = [x, x, x + dx, x + dx, x]
-    Ys = [y, y + dy, y + dy, y, y]
-    if facecolor == 'none':
-        matplotlib.pyplot.plot(Xs, Ys, color)
-    else:
-        matplotlib.pyplot.fill(Xs, Ys, facecolor=facecolor, edgecolor=color)
-
-def plot_rectangles(Array, panel_size, color='r', facecolor='none'):
-    (dx, dy) = panel_size
-    for (x, y) in Array:
-        plot_rectangle(x, y, dx, dy, color=color, facecolor=facecolor)
 
 def plot_polygon(Points):
     Xs, Ys = zip(*Points)
@@ -128,26 +116,51 @@ def check_panels(panels, actual_panel, panel_size, restrictions, rectangles):
             true_centers.append(center)
     return true_panels, true_centers
 
-
 def grid_heuristic(polygon, panel_size, xml_file_path, restrictions, rectangles = None):
     if not rectangles:
         rectangles = [[] for _ in range(len(panel_size))]
     for i in range(len(panel_size)):
-        actual_panel = panel_size[i]
-        sub_rectangles = solve(polygon,actual_panel,xml_file_path,restrictions,rectangles,panel_size)
-        rectangles[i].extend(sub_rectangles)
+        improvment = True
+        while improvment:
+            improvment = False
+            actual_panel = panel_size[i]
+            sub_rectangles = solve(polygon,actual_panel,xml_file_path,restrictions,rectangles,panel_size)
+            if sub_rectangles:
+                improvment = True
+                rectangles[i].extend(sub_rectangles)
     return rectangles
     
         
 
-
 if __name__ == "__main__":
+    areas_dict = dict()
+    path = 'C:/Users/valen/OneDrive/Escritorio/Bony/Di tella/TD8FINAL/TD8_ProyectoFinal/mapas'
+    for file_name in os.listdir(path):
+        if file_name == "Entrada_v2.xml" or file_name=="sqr.01.xml" or file_name=="sqr.02.xml":
+            continue
+        file_path = os.path.join(path, file_name)
+        if os.path.isfile(file_path):  # Check if it's a file
+                print("File proccessing: " + file_name)
+                polygon, pads_data, restrictions , angulo = xml_data_extractor(file_path)
+                rectangles = grid_heuristic(polygon, pads_data, file_path, restrictions)
+                area = calculate_area(polygon,rectangles,pads_data)
+                areas_dict[file_name] = area
+    
+    json_file = "areas_for_maps"
+    file_path_solutions = 'C:/Users/valen/OneDrive/Escritorio/Bony/Di tella/TD8FINAL/TD8_ProyectoFinal/solutions'
+    with open(file_path_solutions, 'w') as json_file:
+        json.dump(data, json_file, indent=4)
 
-    file_path_bony = 'C:/Users/valen/OneDrive/Escritorio/Bony/Di tella/TD8FINAL/TD8_ProyectoFinal/mapas/pol.01.xml'
-    file_path_bony = 'C:/Users/valen/OneDrive/Escritorio/Bony/Di tella/TD8FINAL/TD8_ProyectoFinal/mapas/pol.1s.07.xml'
-    # file_path_bony = 'C:/Users/valen/OneDrive/Escritorio/Bony/Di tella/TD8FINAL/TD8_ProyectoFinal/mapas/Entrada_v2.xml'
-    polygon, pads_data, restrictions , angulo = xml_data_extractor(file_path_bony)
-    rectangles = grid_heuristic(polygon, pads_data, file_path_bony, restrictions)
-    rectangles = grid_heuristic(polygon, pads_data, file_path_bony, restrictions, rectangles)
-    fun_generacion_mapa(polygon,restrictions,rectangles,pads_data)
-    calculate_area(polygon,rectangles,pads_data)
+    # file_path_bony = 'C:/Users/valen/OneDrive/Escritorio/Bony/Di tella/TD8FINAL/TD8_ProyectoFinal/mapas/test.01.xml'
+    # polygon, pads_data, restrictions , angulo = xml_data_extractor(file_path_bony)
+    # rectangles = [[]]
+    # # rectangles = grid_heuristic(polygon, pads_data, file_path_bony, restrictions)
+    # fun_generacion_mapa(polygon,restrictions,rectangles,pads_data)
+    # calculate_area(polygon,rectangles,pads_data)
+
+
+    # file_path_bony_2 = 'C:/Users/valen/OneDrive/Escritorio/Bony/Di tella/TD8FINAL/TD8_ProyectoFinal/mapas/pol.1s.07.xml'
+    # polygon, pads_data, restrictions , angulo = xml_data_extractor(file_path_bony_2)
+    # rectangles = grid_heuristic(polygon, pads_data, file_path_bony_2, restrictions)
+    # fun_generacion_mapa(polygon,restrictions,rectangles,pads_data)
+    # calculate_area(polygon,rectangles,pads_data)
