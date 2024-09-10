@@ -11,6 +11,7 @@ sys.path.append(os.path.abspath("TD8_ProyectoFinal/"))
 from lectura_data.analisis import check_rectangles, calculate_area
 from lectura_data.generacion_mapa import fun_generacion_mapa
 from lectura_data.xml_parsing import xml_data_extractor
+import json
 
 
 def solve(polygon, actual_panel, xml_file_path, restrictions, rectangles, panel_size):
@@ -41,7 +42,7 @@ def solve(polygon, actual_panel, xml_file_path, restrictions, rectangles, panel_
                 okay_panels = contains_rectangles(Array, actual_panel, original_polygon)
                 okay_panels, okay_centers = check_panels(okay_panels, actual_panel, panel_size, restrictions,rectangles)
 
-                if len(okay_panels) > max_panel: 
+                if len(okay_panels) >= max_panel: 
                     max_panel = len(okay_panels)
                     best_indentation, best_offset_x, best_offset_y = indentation, offset_x, offset_y
                     best_centers = okay_centers
@@ -66,10 +67,10 @@ def solve(polygon, actual_panel, xml_file_path, restrictions, rectangles, panel_
 
                     # solution_num+=1
                     
-                    print("Maximal number of panels is", max_panel)
+                    # print("Maximal number of panels is", max_panel)
 
-                    print("Indentation is {}, offset is ({}, {})".
-                           format(best_indentation, best_offset_x, best_offset_y))
+                    # print("Indentation is {}, offset is ({}, {})".
+                    #        format(best_indentation, best_offset_x, best_offset_y))
 
     return  best_centers
 
@@ -139,22 +140,28 @@ if __name__ == "__main__":
         if file_name == "Entrada_v2.xml" or file_name=="sqr.01.xml" or file_name=="sqr.02.xml":
             continue
         file_path = os.path.join(path, file_name)
-        if os.path.isfile(file_path):  # Check if it's a file
+        if os.path.isfile(file_path):  
                 print("File proccessing: " + file_name)
                 polygon, pads_data, restrictions , angulo = xml_data_extractor(file_path)
                 rectangles = grid_heuristic(polygon, pads_data, file_path, restrictions)
                 area = calculate_area(polygon,rectangles,pads_data)
                 areas_dict[file_name] = area
     
-    json_file = "areas_for_maps"
-    file_path_solutions = 'C:/Users/valen/OneDrive/Escritorio/Bony/Di tella/TD8FINAL/TD8_ProyectoFinal/solutions'
-    with open(file_path_solutions, 'w') as json_file:
-        json.dump(data, json_file, indent=4)
+    
+    file_path_solutions = 'C:/Users/valen/OneDrive/Escritorio/Bony/Di tella/TD8FINAL/TD8_ProyectoFinal/areas/areas_for_map_eq.json'
 
-    # file_path_bony = 'C:/Users/valen/OneDrive/Escritorio/Bony/Di tella/TD8FINAL/TD8_ProyectoFinal/mapas/test.01.xml'
+    # Ensure the directory exists
+    os.makedirs(os.path.dirname(file_path_solutions), exist_ok=True)
+
+    # Write the dictionary to the file as JSON
+    with open(file_path_solutions, 'w') as json_file:
+        json.dump(areas_dict, json_file, indent=4)
+
+    print(f"File saved at: {file_path_solutions}")
+
+    # file_path_bony = 'C:/Users/valen/OneDrive/Escritorio/Bony/Di tella/TD8FINAL/TD8_ProyectoFinal/mapas/pol.1s.06.xml'
     # polygon, pads_data, restrictions , angulo = xml_data_extractor(file_path_bony)
-    # rectangles = [[]]
-    # # rectangles = grid_heuristic(polygon, pads_data, file_path_bony, restrictions)
+    # rectangles = grid_heuristic(polygon, pads_data, file_path_bony, restrictions)
     # fun_generacion_mapa(polygon,restrictions,rectangles,pads_data)
     # calculate_area(polygon,rectangles,pads_data)
 
