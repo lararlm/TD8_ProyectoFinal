@@ -15,7 +15,7 @@ from lectura_and_analisis.generacion_mapa import fun_generacion_mapa
 from lectura_and_analisis.xml_parsing import xml_data_extractor
 import json
 
-def solve(polygon, actual_panel, xml_file_path, restrictions, rectangles, panel_size):
+def solve(polygon, actual_panel, restrictions, rectangles, panel_size):
     """Search for different offsets to find the solution that maximizes the number of panels."""
     solution_num = 0
     max_panel = 0 
@@ -119,7 +119,7 @@ def check_panels(panels, actual_panel, panel_size, restrictions, rectangles):
     return true_panels, true_centers
 
 
-def grid_heuristic(polygon, panel_size, xml_file_path, restrictions, rectangles = None):
+def grid_heuristic(polygon, panel_size, restrictions, rectangles = None):
     if not rectangles:
         rectangles = [[] for _ in range(len(panel_size))]
     for i in range(len(panel_size)):
@@ -127,7 +127,7 @@ def grid_heuristic(polygon, panel_size, xml_file_path, restrictions, rectangles 
         while improvment:
             improvment = False
             actual_panel = panel_size[i]
-            sub_rectangles = solve(polygon,actual_panel,xml_file_path,restrictions,rectangles,panel_size)
+            sub_rectangles = solve(polygon,actual_panel,restrictions,rectangles,panel_size)
             if sub_rectangles:
                 improvment = True
                 rectangles[i].extend(sub_rectangles)
@@ -163,7 +163,7 @@ if __name__ == "__main__":
 
     file_path_bony = 'C:/Users/valen/OneDrive/Escritorio/Bony/Di tella/TD8FINAL/TD8_ProyectoFinal/mapas/pol.01.xml'
     polygon, pads_data, restrictions , angulo = xml_data_extractor(file_path_bony)
-    rectangles = grid_heuristic(polygon, pads_data, file_path_bony, restrictions)
-    fun_generacion_mapa(polygon,restrictions,rectangles,pads_data)
+    rectangles = grid_heuristic(polygon, pads_data, restrictions)
+    # fun_generacion_mapa(polygon,restrictions,rectangles,pads_data)
     area = calculate_area(polygon,rectangles,pads_data)
-    optimize_area(grid_heuristic,polygon,rectangles,pads_data,area)
+    best_recntagles = optimize_area(grid_heuristic,polygon,rectangles,pads_data,restrictions,3)

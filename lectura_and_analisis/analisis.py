@@ -91,6 +91,4 @@ def calculate_area(polygon, rectangles, panel_size):
         aux_rects = len(rectangles[i])
         quantity_rect.append(aux_rects)
         cover_area += panel_size[i][0] * panel_size[i][1] * aux_rects
-
-    print(f"Rectangles: {quantity_rect} Area covered: {cover_area / total_area}")     
     return cover_area / total_area
