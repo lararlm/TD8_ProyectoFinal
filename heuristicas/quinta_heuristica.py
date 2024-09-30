@@ -4,6 +4,7 @@ from shapely.geometry import Polygon, Point, box
 # Estimate how many rectangles can fit inside the polygon
 def estimate_population_size(outer_polygon, rectangle_sizes):
     poly = Polygon(outer_polygon)
+    
     poly_area = poly.area
     
     total_area = sum(width * height for width, height in rectangle_sizes)
