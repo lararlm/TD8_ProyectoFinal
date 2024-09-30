@@ -165,5 +165,6 @@ if __name__ == "__main__":
     polygon, pads_data, restrictions , angulo = xml_data_extractor(file_path_bony)
     rectangles = grid_heuristic(polygon, pads_data, restrictions)
     # fun_generacion_mapa(polygon,restrictions,rectangles,pads_data)
-    area = calculate_area(polygon,rectangles,pads_data)
+    len_rectangles = [len(rect) for rect in rectangles]
+    area = calculate_area(polygon,len_rectangles,pads_data)
     best_recntagles = optimize_area(grid_heuristic,polygon,rectangles,pads_data,restrictions,3)

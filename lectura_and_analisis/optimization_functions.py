@@ -5,7 +5,8 @@ import copy
 
 def optimize_area(opt_func,polygon,rectangles,pads_data,restrictions, minimum_rectangles_to_delete = 1, iterations = 100):
     optimal_rectangles = copy.deepcopy(rectangles)
-    optimal_area = calculate_area(polygon, optimal_rectangles, pads_data)
+    len_opt_rectangles = [len(rect) for rect in optimal_rectangles]
+    optimal_area = calculate_area(polygon, len_opt_rectangles, pads_data)
     for _ in range(iterations):
         temporal_rectangles = copy.deepcopy(optimal_rectangles)
         for i in range(len(temporal_rectangles)):
@@ -15,11 +16,8 @@ def optimize_area(opt_func,polygon,rectangles,pads_data,restrictions, minimum_re
             for rect in rectangles_to_remove:
                 temporal_rectangles[i].remove(rect)
 
-        print(len(optimal_rectangles[0]),len(optimal_rectangles[1]))
-        print(len(temporal_rectangles[0]),len(temporal_rectangles[1]))
         temporal_rectangles = opt_func(polygon,pads_data,restrictions,temporal_rectangles)
-        print(len(optimal_rectangles[0]),len(optimal_rectangles[1]))
-        print(len(temporal_rectangles[0]),len(temporal_rectangles[1]))
+        len_temp_rectangles =  [len(rect) for rect in temporal_rectangles]
         temporal_area = calculate_area(polygon,temporal_rectangles,pads_data)
         print(temporal_area)
 

@@ -81,14 +81,12 @@ def check_rectangles(center, center_size, pads_data, rectangles):
     return True
 
 
-def calculate_area(polygon, rectangles, panel_size):
+def calculate_area(polygon, len_rectangles, panel_size):
     area_polygon = Polygon(polygon)
     total_area = area_polygon.area
-    quantity_rect = []
     cover_area = 0
 
-    for i in range(len(rectangles)):
-        aux_rects = len(rectangles[i])
-        quantity_rect.append(aux_rects)
-        cover_area += panel_size[i][0] * panel_size[i][1] * aux_rects
+    for i in range(len(len_rectangles)):
+        len_rects = len_rectangles[i]
+        cover_area += panel_size[i][0] * panel_size[i][1] * len_rects
     return cover_area / total_area
