@@ -15,10 +15,11 @@ def optimize_area(opt_func,polygon,rectangles,pads_data,restrictions, minimum_re
             print("Estos rectangulos se eliminaran:", rectangles_to_remove)
             for rect in rectangles_to_remove:
                 temporal_rectangles[i].remove(rect)
-
+        print(len_opt_rectangles)
         temporal_rectangles = opt_func(polygon,pads_data,restrictions,temporal_rectangles)
         len_temp_rectangles =  [len(rect) for rect in temporal_rectangles]
-        temporal_area = calculate_area(polygon,temporal_rectangles,pads_data)
+        print(len_temp_rectangles)
+        temporal_area = calculate_area(polygon,len_temp_rectangles,pads_data)
         print(temporal_area)
 
         if temporal_area > optimal_area:

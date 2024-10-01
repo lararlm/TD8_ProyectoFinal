@@ -1,9 +1,8 @@
 import matplotlib.patches
 import matplotlib.pyplot
-from numba import jit
 import numpy as np  
 import csv
-import math
+import random
 from tqdm import tqdm
 from shapely.geometry import Point, Polygon 
 import sys
@@ -18,6 +17,7 @@ import json
 def solve(polygon, actual_panel, restrictions, rectangles, panel_size):
     """Search for different offsets to find the solution that maximizes the number of panels."""
     solution_num = 0
+    change = False
     max_panel = 0 
     best_panels, best_array, best_indentation, best_offset_x, best_offset_y, best_centers = None, None, None, None, None, None
 
@@ -38,12 +38,14 @@ def solve(polygon, actual_panel, restrictions, rectangles, panel_size):
     for indentation in range(0, int(actual_panel[0])):
         for offset_x in range(-int(actual_panel[0]), int(actual_panel[0])):
             for offset_y in range(-int(actual_panel[1]), int(actual_panel[1])):
-                # Generate the array of possible panels
+                change = False
                 Array = generate_panel_arrays(n_x, n_y, actual_panel, indentation, offset_x, offset_y)
                 okay_panels = contains_rectangles(Array, actual_panel, original_polygon)
                 okay_panels, okay_centers = check_panels(okay_panels, actual_panel, panel_size, restrictions,rectangles)
 
-                if len(okay_panels) >= max_panel: 
+                if len(okay_panels) == max_panel:
+                    change = random.choices([True,False],[10,90])
+                if len(okay_panels) >= max_panel or change: 
                     max_panel = len(okay_panels)
                     best_indentation, best_offset_x, best_offset_y = indentation, offset_x, offset_y
                     best_centers = okay_centers
@@ -167,4 +169,27 @@ if __name__ == "__main__":
     # fun_generacion_mapa(polygon,restrictions,rectangles,pads_data)
     len_rectangles = [len(rect) for rect in rectangles]
     area = calculate_area(polygon,len_rectangles,pads_data)
-    best_recntagles = optimize_area(grid_heuristic,polygon,rectangles,pads_data,restrictions,3)
+    best_rectangles = optimize_area(grid_heuristic,polygon,rectangles,pads_data,restrictions,3,100)
+
+    # Corrected path to save the CSV
+    csv_path = r'C:\Users\valen\OneDrive\Escritorio\Bony\Di tella\TD8FINAL\TD8_ProyectoFinal\solutions\pol.01\best_rectangles1.csv'
+
+    # Find the maximum length of the lists inside best_rectangles
+    max_length = max(len(lst) for lst in best_rectangles)
+
+    # Save best_rectangles to a CSV file
+    with open(csv_path, mode='w', newline='') as file:
+        writer = csv.writer(file)
+        
+        # Write header
+        writer.writerow([f'x{i}, y{i}' for i in range(len(best_rectangles))])
+        
+        # Iterate through each "row" index up to the maximum length
+        for i in range(max_length):
+            row = []
+            for rect_list in best_rectangles:
+                if i < len(rect_list):
+                    row.extend([rect_list[i][0], rect_list[i][1]])  # Add x and y coordinates as floats/ints
+                else:
+                    row.extend([None, None])  # Use None for missing values to avoid quotes
+            writer.writerow(row)

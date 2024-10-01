@@ -85,7 +85,6 @@ def calculate_area(polygon, len_rectangles, panel_size):
     area_polygon = Polygon(polygon)
     total_area = area_polygon.area
     cover_area = 0
-
     for i in range(len(len_rectangles)):
         len_rects = len_rectangles[i]
         cover_area += panel_size[i][0] * panel_size[i][1] * len_rects
