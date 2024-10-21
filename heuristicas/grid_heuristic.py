@@ -14,7 +14,7 @@ from lectura_and_analisis.generacion_mapa import fun_generacion_mapa
 from lectura_and_analisis.xml_parsing import xml_data_extractor
 import json
 
-def solve(polygon, actual_panel, restrictions, rectangles, panel_size):
+def solve(polygon, actual_panel, restrictions, rectangles, panel_size, rand):
     """Search for different offsets to find the solution that maximizes the number of panels."""
     solution_num = 0
     change = False
@@ -38,14 +38,22 @@ def solve(polygon, actual_panel, restrictions, rectangles, panel_size):
     for indentation in range(0, int(actual_panel[0])):
         for offset_x in range(-int(actual_panel[0]), int(actual_panel[0])):
             for offset_y in range(-int(actual_panel[1]), int(actual_panel[1])):
+                epsilon_x = 0
+                epsilon_y = 0
+                epsilon_id = 0
+                if rand:
+                    random_movements = np.random.normal(0,0.2,3)
+                real_offset_x = offset_x + random_movements[0]
+                real_offset_y = offset_y + random_movements[1]
+                real_id = indentation + random_movements[2]
                 change = False
-                Array = generate_panel_arrays(n_x, n_y, actual_panel, indentation, offset_x, offset_y)
+                Array = generate_panel_arrays(n_x, n_y, actual_panel, real_id, real_offset_x, real_offset_y)
                 okay_panels = contains_rectangles(Array, actual_panel, original_polygon)
                 okay_panels, okay_centers = check_panels(okay_panels, actual_panel, panel_size, restrictions,rectangles)
 
                 if len(okay_panels) == max_panel:
                     change = random.choices([True,False],[10,90])
-                if len(okay_panels) >= max_panel or change: 
+                if len(okay_panels)> max_panel or change: 
                     max_panel = len(okay_panels)
                     best_indentation, best_offset_x, best_offset_y = indentation, offset_x, offset_y
                     best_centers = okay_centers
@@ -121,7 +129,7 @@ def check_panels(panels, actual_panel, panel_size, restrictions, rectangles):
     return true_panels, true_centers
 
 
-def grid_heuristic(polygon, panel_size, restrictions, rectangles = None):
+def grid_heuristic(polygon, panel_size, restrictions, rand = False, rectangles = None):
     if not rectangles:
         rectangles = [[] for _ in range(len(panel_size))]
     for i in range(len(panel_size)):
@@ -129,7 +137,7 @@ def grid_heuristic(polygon, panel_size, restrictions, rectangles = None):
         while improvment:
             improvment = False
             actual_panel = panel_size[i]
-            sub_rectangles = solve(polygon,actual_panel,restrictions,rectangles,panel_size)
+            sub_rectangles = solve(polygon,actual_panel,restrictions,rectangles,panel_size,rand)
             if sub_rectangles:
                 improvment = True
                 rectangles[i].extend(sub_rectangles)

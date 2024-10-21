@@ -49,15 +49,15 @@ def xml_data_extractor(file_path: str):
 
 
 # # # file_path_bony = 'C:/Users/valen/OneDrive/Escritorio/Bony/Di tella/TD8FINAL/TD8_ProyectoFinal/mapas/pol.01.xml'
-# yacimiento_coords, pads_data, restricciones_data , angulo= xml_data_extractor(file_path_lari)
-# print(yacimiento_coords ,pads_data, restricciones_data)
+# yacimiento_coords, panel_size, restricciones_data , angulo= xml_data_extractor(file_path_lari)
+# print(yacimiento_coords ,panel_size, restricciones_data)
 
 # # print("Yacimiento Coordinates:", yacimiento_coords)
-# # print("Pads Data (Largo, Ancho, Angulo):", pads_data , angulo)
+# # print("Pads Data (Largo, Ancho, Angulo):", panel_size , angulo)
 # # print("Restricciones Data:", restricciones_data)
 
 
-# # rectangles = [[pads_data[0][0], pads_data[0][1], 10 , 15]]
+# # rectangles = [[panel_size[0][0], panel_size[0][1], 10 , 15]]
 # rectangles = []
 
 # # print(rectangles)
