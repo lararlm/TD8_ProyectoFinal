@@ -5,6 +5,7 @@ import numpy as np
 import sys
 import os
 sys.path.append(os.path.abspath("TD8_ProyectoFinal/"))
+from heuristicas.grid_heuristic import grid_heuristic
 from lectura_and_analisis.xml_parsing import xml_data_extractor
 from lectura_and_analisis.optimization_functions import optimize_area
 from lectura_and_analisis.generacion_mapa import fun_generacion_mapa
@@ -137,11 +138,18 @@ def compute_coverage_ratio(placed_rectangles, main_polygon_coords):
     coverage_ratio = total_covered_area / main_polygon_area
     return coverage_ratio
 
-def answer_conversion(rectangles_placed):
-    new_rects = [[], []]
-    for polygon in rectangles_placed:
-        centroid = polygon.centroid
-        new_rects[1].append((centroid.x, centroid.y))
+def answer_conversion(rectangles_placed, panels):
+    if panels == 2:
+        new_rects = [[], []]
+        for polygon in rectangles_placed:
+            centroid = polygon.centroid
+            new_rects[1].append((centroid.x, centroid.y))
+    if panels == 1:
+        new_rects = [[]]
+        for polygon in rectangles_placed:
+            centroid = polygon.centroid
+            new_rects[0].append((centroid.x, centroid.y))
+
     return new_rects
 
 
@@ -155,7 +163,7 @@ restriction_polygons = [[(9.0, 22.0), (9.0, 25.0), (12.0, 28.0), (16.0, 29.0), (
 rectangle_size = (4.0, 2.0)
 '''
 
-file_path_lari = 'C:/Users/44482978/Desktop/TD8/TD8FINAL/TD8_ProyectoFinal/mapas/pol.01.xml'
+file_path_lari = 'C:/Users/44482978/Desktop/TD8/TD8FINAL/TD8_ProyectoFinal/mapas/pol.02.xml'
 yacimiento_coords, pads_data, restricciones_data , angulo= xml_data_extractor(file_path_lari)
 print(pads_data)
 rectangle_size = (pads_data[len(pads_data) - 1][1], pads_data[len(pads_data) - 1][0])
@@ -168,11 +176,12 @@ coverage_ratio = compute_coverage_ratio(placed_rectangles, yacimiento_coords)
 print(f"The ratio of the covered area to the polygon area is {coverage_ratio:.2%}.")
 
 
-placed_rectangles = answer_conversion(placed_rectangles)
+placed_rectangles = answer_conversion(placed_rectangles, 1)
+print(placed_rectangles)
 # Plot the solutio
 
 # Example usage
-new_result = optimize_area(place_rectangles, yacimiento_coords, placed_rectangles, pads_data, restricciones_data, 1, 10)
+new_result = optimize_area(grid_heuristic , yacimiento_coords, placed_rectangles, pads_data, restricciones_data, 1, 100)
 
-fun_generacion_mapa(yacimiento_coords, restricciones_data, placed_rectangles, rectangle_size)
+fun_generacion_mapa(yacimiento_coords, restricciones_data, new_result, pads_data)
 
