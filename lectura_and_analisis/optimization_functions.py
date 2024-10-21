@@ -11,6 +11,8 @@ def optimize_area(opt_func,polygon,rectangles,panel_size,restrictions, minimum_r
     for _ in tqdm(range(iterations)):
         temporal_rectangles = copy.deepcopy(optimal_rectangles)
         for i in range(len(temporal_rectangles)):
+            if len(temporal_rectangles[i]) == 0:
+                continue
             number_of_rectangles = random.randint(minimum_rectangles_to_delete,len(temporal_rectangles[i]))
             rectangles_to_remove = random.sample(temporal_rectangles[i], number_of_rectangles)
             for rect in rectangles_to_remove:
