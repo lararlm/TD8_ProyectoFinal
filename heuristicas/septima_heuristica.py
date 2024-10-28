@@ -154,34 +154,34 @@ def answer_conversion(rectangles_placed, panels):
 
 
 
-# Example usage
-'''
-outer_polygon =  [(10.0, 0.0), (0.0, 16.0), (0.0, 29.0), (12.0, 33.0), (33.0, 33.0), (46.0, 16.0), (46.0, 6.0), (38.0, 0.0), (10.0, 0.0)]
+# # Example usage
+# '''
+# outer_polygon =  [(10.0, 0.0), (0.0, 16.0), (0.0, 29.0), (12.0, 33.0), (33.0, 33.0), (46.0, 16.0), (46.0, 6.0), (38.0, 0.0), (10.0, 0.0)]
 
-restriction_polygons = [[(9.0, 22.0), (9.0, 25.0), (12.0, 28.0), (16.0, 29.0), (17.0, 27.0), (12.0, 23.0), (9.0, 22.0)], [(25.0, 22.0), (27.0, 25.0), (29.0, 27.0), (30.0, 25.0), (27.0, 21.0), (25.0, 22.0)], [(25.0, 22.0), (27.0, 21.0), (29.0, 17.0), (27.5, 15.0), (25.0, 17.0), (25.0, 22.0)], [(16.0, 11.0), (17.0, 13.0), (24.0, 8.0), (27.0, 5.0), (26.0, 4.0), (19.0, 7.0), (16.0, 11.0)], [(20.0, 11.0), (21.0, 13.0), (17.0, 14.0), (18.0, 13.0), (20.0, 11.0)], [(32.0, 11.0), (37.0, 13.0), (36.0, 14.0), (31.0, 13.0), (32.0, 11.0)], [(34.0, 11.0), (41.0, 12.0), (42.0, 8.0), (33.0, 7.0), (34.0, 11.0)]]
+# restriction_polygons = [[(9.0, 22.0), (9.0, 25.0), (12.0, 28.0), (16.0, 29.0), (17.0, 27.0), (12.0, 23.0), (9.0, 22.0)], [(25.0, 22.0), (27.0, 25.0), (29.0, 27.0), (30.0, 25.0), (27.0, 21.0), (25.0, 22.0)], [(25.0, 22.0), (27.0, 21.0), (29.0, 17.0), (27.5, 15.0), (25.0, 17.0), (25.0, 22.0)], [(16.0, 11.0), (17.0, 13.0), (24.0, 8.0), (27.0, 5.0), (26.0, 4.0), (19.0, 7.0), (16.0, 11.0)], [(20.0, 11.0), (21.0, 13.0), (17.0, 14.0), (18.0, 13.0), (20.0, 11.0)], [(32.0, 11.0), (37.0, 13.0), (36.0, 14.0), (31.0, 13.0), (32.0, 11.0)], [(34.0, 11.0), (41.0, 12.0), (42.0, 8.0), (33.0, 7.0), (34.0, 11.0)]]
 
-rectangle_size = (4.0, 2.0)
-'''
+# rectangle_size = (4.0, 2.0)
+# '''
 
-file_path_lari = 'C:/Users/44482978/Desktop/TD8/TD8FINAL/TD8_ProyectoFinal/mapas/pol.02.xml'
-yacimiento_coords, pads_data, restricciones_data , angulo= xml_data_extractor(file_path_lari)
-print(pads_data)
-rectangle_size = (pads_data[len(pads_data) - 1][1], pads_data[len(pads_data) - 1][0])
-print(rectangle_size)
+# file_path_lari = 'C:/Users/44482978/Desktop/TD8/TD8FINAL/TD8_ProyectoFinal/mapas/pol.02.xml'
+# yacimiento_coords, pads_data, restricciones_data , angulo= xml_data_extractor(file_path_lari)
+# print(pads_data)
+# rectangle_size = (pads_data[len(pads_data) - 1][1], pads_data[len(pads_data) - 1][0])
+# print(rectangle_size)
 
-# Place the rectangles along the bottom line
-placed_rectangles = place_rectangles(yacimiento_coords, restricciones_data, rectangle_size, 0)
-plot_solution(yacimiento_coords, restricciones_data, placed_rectangles)
-coverage_ratio = compute_coverage_ratio(placed_rectangles, yacimiento_coords)
-print(f"The ratio of the covered area to the polygon area is {coverage_ratio:.2%}.")
+# # Place the rectangles along the bottom line
+# placed_rectangles = place_rectangles(yacimiento_coords, restricciones_data, rectangle_size, 0)
+# plot_solution(yacimiento_coords, restricciones_data, placed_rectangles)
+# coverage_ratio = compute_coverage_ratio(placed_rectangles, yacimiento_coords)
+# print(f"The ratio of the covered area to the polygon area is {coverage_ratio:.2%}.")
 
 
-placed_rectangles = answer_conversion(placed_rectangles, 1)
-print(placed_rectangles)
-# Plot the solutio
+# placed_rectangles = answer_conversion(placed_rectangles, 1)
+# print(placed_rectangles)
+# # Plot the solutio
 
-# Example usage
-new_result = optimize_area(grid_heuristic , yacimiento_coords, placed_rectangles, pads_data, restricciones_data, 1, 100)
+# # Example usage
+# new_result = optimize_area(grid_heuristic , yacimiento_coords, placed_rectangles, pads_data, restricciones_data, 1, 100)
 
-fun_generacion_mapa(yacimiento_coords, restricciones_data, new_result, pads_data)
+# fun_generacion_mapa(yacimiento_coords, restricciones_data, new_result, pads_data)
 
