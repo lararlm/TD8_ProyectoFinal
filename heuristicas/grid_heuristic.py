@@ -9,9 +9,6 @@ import sys
 import os
 sys.path.append(os.path.abspath("TD8_ProyectoFinal/"))
 from lectura_and_analisis.analisis import check_rectangles, calculate_area
-from lectura_and_analisis.optimization_functions import optimize_area
-from lectura_and_analisis.generacion_mapa import fun_generacion_mapa
-from lectura_and_analisis.xml_parsing import xml_data_extractor
 import json
 
 def solve(polygon, actual_panel, restrictions, rectangles, panel_size, rand):
@@ -41,6 +38,7 @@ def solve(polygon, actual_panel, restrictions, rectangles, panel_size, rand):
                 epsilon_x = 0
                 epsilon_y = 0
                 epsilon_id = 0
+                random_movements = [0,0,0]
                 if rand:
                     random_movements = np.random.normal(0,0.2,3)
                 real_offset_x = offset_x + random_movements[0]
@@ -58,31 +56,7 @@ def solve(polygon, actual_panel, restrictions, rectangles, panel_size, rand):
                     best_indentation, best_offset_x, best_offset_y = indentation, offset_x, offset_y
                     best_centers = okay_centers
                     best_panels = okay_panels
-                    best_array = Array 
-
-                    # filename = "Solution_" + str(solution_num) + "1st"+ ".csv" 
-                    # folder_path = os.path.dirname(xml_file_path)
-                    # folder_name = os.path.splitext(os.path.basename(xml_file_path))[0]
-                    # csv_folder_path = os.path.join(folder_path, folder_name)
-                    # os.makedirs(csv_folder_path, exist_ok=True)
-                    # csv_filename = os.path.join(csv_folder_path, filename)
-
-                    # with open(csv_filename, mode='w', newline='') as file:
-                    #     writer = csv.writer(file)
-                        
-                    #     # Optionally write a header
-                    #     writer.writerow(["Center_X", "Center_Y"])
-                        
-                    #     # Write each coordinate to the file
-                    #     writer.writerows(best_centers)
-
-                    # solution_num+=1
-                    
-                    # print("Maximal number of panels is", max_panel)
-
-                    # print("Indentation is {}, offset is ({}, {})".
-                    #        format(best_indentation, best_offset_x, best_offset_y))
-
+                    best_array = Array
     return  best_centers
 
 def generate_panel_arrays(nx, ny, panel_size, indentation, offset_x, offset_y):
