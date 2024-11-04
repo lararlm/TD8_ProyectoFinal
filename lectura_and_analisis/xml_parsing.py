@@ -1,7 +1,6 @@
 import xml.etree.ElementTree as ET
 
 def xml_data_extractor(file_path: str):
-
     
     # Parsing del archivo XML
     tree = ET.parse(file_path)
