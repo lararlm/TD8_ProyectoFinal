@@ -91,18 +91,18 @@ def plot_solution(main_polygon_coords, restriction_polygons_coords, placed_recta
 
     # Plot the main polygon
     main_polygon = Polygon(main_polygon_coords)
-    plot_polygon(main_polygon, ax=ax, add_points=False, color='lightblue', alpha=0.5, label='Main Polygon')
+    plot_polygon(main_polygon, ax=ax, add_points=False, color='lightblue', alpha=0.5, label='Yacimiento')
 
     # Plot restriction polygons
     for i, restriction_coords in enumerate(restriction_polygons_coords):
         restriction_polygon = Polygon(restriction_coords)
-        plot_polygon(restriction_polygon, ax=ax, color='red', alpha=0.5, label=f'Restriction {i+1}' if i == 0 else "")
+        plot_polygon(restriction_polygon, ax=ax, color='red', alpha=0.5, label=f'Restricciones' if i == 0 else "")
 
     # Plot placed rectangles and their centers
     centers = []
     for i, rect in enumerate(placed_rectangles):
         x, y = rect.exterior.xy
-        ax.plot(x, y, color='green', alpha=0.7, linewidth=2, solid_capstyle='round', label=f'Placed Rectangles' if i == 0 else "")
+        ax.plot(x, y, color='green', alpha=0.7, linewidth=2, solid_capstyle='round', label=f'Máquinas de extracción' if i == 0 else "")
         ax.fill(x, y, color='green', alpha=0.3)
 
         # Calculate the center point of the rectangle
@@ -112,8 +112,9 @@ def plot_solution(main_polygon_coords, restriction_polygons_coords, placed_recta
         ax.plot(center_x, center_y, 'go', markersize=5)  # Plot the center as a red dot
 
     # Set plot labels and legend
-    ax.set_title('Polygon with Restrictions and Placed Rectangles')
+    ax.set_title('Solución')
     ax.legend()
+    ax.grid()
     plt.show()
 
 
