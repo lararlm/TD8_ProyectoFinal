@@ -102,14 +102,14 @@ def plot_solution(main_polygon_coords, restriction_polygons_coords, placed_recta
     centers = []
     for i, rect in enumerate(placed_rectangles):
         x, y = rect.exterior.xy
-        ax.plot(x, y, color='green', alpha=0.7, linewidth=2, solid_capstyle='round', label=f'Máquinas de extracción' if i == 0 else "")
-        ax.fill(x, y, color='green', alpha=0.3)
+        ax.plot(x, y, color='darkblue', alpha=0.7, linewidth=2, solid_capstyle='round', label=f'Máquinas de extracción' if i == 0 else "")
+        ax.fill(x, y, color='darkblue', alpha=0.3)
 
         # Calculate the center point of the rectangle
         center_x = rect.centroid.x
         center_y = rect.centroid.y
         centers.append((center_x, center_y))
-        ax.plot(center_x, center_y, 'go', markersize=5)  # Plot the center as a red dot
+        ax.plot(center_x, center_y, marker = "o", color = 'darkblue', markersize=5)  # Plot the center as a red dot
 
     # Set plot labels and legend
     ax.set_title('Solución')
@@ -156,18 +156,28 @@ def answer_conversion(rectangles_placed, panels):
 
 from shapely.geometry import Point, Polygon
 
-def inverse_answer_conversion(new_rects, panels, width, height):
+def inverse_answer_conversion(new_rects, panels, width_1, height_1, width_2 = None, height2 = None):
     rectangles_placed = []
     
     if panels == 2:
+        for centroid_coords in new_rects[0]:
+            x, y = centroid_coords
+            # Create a rectangle (polygon) centered at (x, y)
+            rectangle = Polygon([
+                (x - width_1 / 2, y - height_1 / 2),
+                (x + width_1 / 2, y - height_1 / 2),
+                (x + width_1 / 2, y + height_1 / 2),
+                (x - width_1 / 2, y + height_1 / 2)
+            ])
+            rectangles_placed.append(rectangle)
         for centroid_coords in new_rects[1]:
             x, y = centroid_coords
             # Create a rectangle (polygon) centered at (x, y)
             rectangle = Polygon([
-                (x - width / 2, y - height / 2),
-                (x + width / 2, y - height / 2),
-                (x + width / 2, y + height / 2),
-                (x - width / 2, y + height / 2)
+                (x - width_2 / 2, y - height2 / 2),
+                (x + width_2 / 2, y - height2 / 2),
+                (x + width_2 / 2, y + height2 / 2),
+                (x - width_2 / 2, y + height2 / 2)
             ])
             rectangles_placed.append(rectangle)
     elif panels == 1:
@@ -175,10 +185,10 @@ def inverse_answer_conversion(new_rects, panels, width, height):
             x, y = centroid_coords
             # Create a rectangle (polygon) centered at (x, y)
             rectangle = Polygon([
-                (x - width / 2, y - height / 2),
-                (x + width / 2, y - height / 2),
-                (x + width / 2, y + height / 2),
-                (x - width / 2, y + height / 2)
+                (x - width_1 / 2, y - height_1 / 2),
+                (x + width_1 / 2, y - height_1 / 2),
+                (x + width_1 / 2, y + height_1 / 2),
+                (x - width_1 / 2, y + height_1 / 2)
             ])
             rectangles_placed.append(rectangle)
 

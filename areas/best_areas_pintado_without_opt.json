@@ -10,8 +10,8 @@
     "pol.1s.06.xml": 0.5744,
     "pol.1s.07.xml": 0.5744,
     "pol.s2.07.xml": 0.8191,
-    "test.01.xml": ,
-    "test.02.xml": ,
-    "sqr.02.xml": ,
-    "sqr.01.xml": 0.7407,
+    "test.01.xml": 0.9,
+    "test.02.xml": 0.5917,
+    "sqr.02.xml": 0.9259,
+    "sqr.01.xml": 0.7407
 }
