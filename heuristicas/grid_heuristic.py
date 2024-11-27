@@ -11,7 +11,7 @@ sys.path.append(os.path.abspath("TD8_ProyectoFinal/"))
 from lectura_and_analisis.analisis import check_rectangles, calculate_area
 import json
 
-def solve(polygon, actual_panel, restrictions, rectangles, panel_size, rand):
+def solve(polygon, actual_panel, restrictions, rectangles, panel_size, rand, optimizing):
     """Search for different offsets to find the solution that maximizes the number of panels."""
     solution_num = 0
     change = False
@@ -31,14 +31,21 @@ def solve(polygon, actual_panel, restrictions, rectangles, panel_size, rand):
     n_x = int(max_x // actual_panel[0] + actual_panel[0])
     n_y = int(max_y // actual_panel[1] + actual_panel[1])
 
+    #failsafes
+    counter = 0
+    failed_attempts = 0
+    output_best =  []
+    repetitions = 0
+
     # Iterate over possible offsets and indentations
     for indentation in range(0, int(actual_panel[0])):
         for offset_x in range(-int(actual_panel[0]), int(actual_panel[0])):
             for offset_y in range(-int(actual_panel[1]), int(actual_panel[1])):
-                epsilon_x = 0
-                epsilon_y = 0
-                epsilon_id = 0
+                counter += 1
                 random_movements = [0,0,0]
+                if failed_attempts == 30 and optimizing:
+                    print("terminating")
+                    return best_centers
                 if rand:
                     random_movements = np.random.normal(0,0.2,3)
                 real_offset_x = offset_x + random_movements[0]
@@ -48,15 +55,36 @@ def solve(polygon, actual_panel, restrictions, rectangles, panel_size, rand):
                 Array = generate_panel_arrays(n_x, n_y, actual_panel, real_id, real_offset_x, real_offset_y)
                 okay_panels = contains_rectangles(Array, actual_panel, original_polygon)
                 okay_panels, okay_centers = check_panels(okay_panels, actual_panel, panel_size, restrictions,rectangles)
-
                 if len(okay_panels) == max_panel:
-                    change = random.choices([True,False],[10,90])
+                    change = random.choices([True,False],[6,94])
                 if len(okay_panels)> max_panel or change: 
                     max_panel = len(okay_panels)
                     best_indentation, best_offset_x, best_offset_y = indentation, offset_x, offset_y
                     best_centers = okay_centers
                     best_panels = okay_panels
                     best_array = Array
+                    failed_attempts = 0
+                else:
+                    failed_attempts += 1
+                    print("attempts = ", failed_attempts)
+
+                if counter % 100 == 0:
+                    print("aparece la solución: ", best_centers)
+                    if best_centers not in output_best:
+                        output_best.append(best_centers)
+                    else:
+                        print("sis u already showed up!")
+                        repetitions += 1 
+                        if repetitions == 3:
+                            return best_centers
+                        else:
+                            break
+
+                if failed_attempts == 30:
+                    break
+                
+
+                
     return  best_centers
 
 def generate_panel_arrays(nx, ny, panel_size, indentation, offset_x, offset_y):
@@ -103,7 +131,9 @@ def check_panels(panels, actual_panel, panel_size, restrictions, rectangles):
     return true_panels, true_centers
 
 
-def grid_heuristic(polygon, panel_size, restrictions, rand = False, rectangles = None):
+
+def grid_heuristic(polygon, panel_size, restrictions, rand = True, rectangles = None, optimizing = False):
+    counter = 0
     if not rectangles:
         rectangles = [[] for _ in range(len(panel_size))]
     for i in range(len(panel_size)):
@@ -111,10 +141,14 @@ def grid_heuristic(polygon, panel_size, restrictions, rand = False, rectangles =
         while improvment:
             improvment = False
             actual_panel = panel_size[i]
-            sub_rectangles = solve(polygon,actual_panel,restrictions,rectangles,panel_size,rand)
+            sub_rectangles = solve(polygon,actual_panel,restrictions,rectangles,panel_size,rand, optimizing)
             if sub_rectangles:
+                counter += 1
                 improvment = True
+                print("there is an improvement!")
                 rectangles[i].extend(sub_rectangles)
+                if counter%50==0:
+                    print("POSSIBLE SOLUTION: ", rectangles)
     return rectangles
     
         

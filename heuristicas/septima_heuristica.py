@@ -13,7 +13,7 @@ from lectura_and_analisis.generacion_mapa import fun_generacion_mapa
 
 from shapely.affinity import rotate
 
-def place_rectangles(main_polygon_coords, restriction_polygons_coords, rectangle_size, angle=0):
+def place_rectangles(main_polygon_coords, restriction_polygons_coords, rectangle_size, angle=0, optimizing = False):
     main_polygon = Polygon(main_polygon_coords)
     restriction_polygons = [Polygon(coords) for coords in restriction_polygons_coords]
     placed_rectangles = []
@@ -109,7 +109,7 @@ def plot_solution(main_polygon_coords, restriction_polygons_coords, placed_recta
         center_x = rect.centroid.x
         center_y = rect.centroid.y
         centers.append((center_x, center_y))
-        ax.plot(center_x, center_y, marker = "o", color = 'darkblue', markersize=5)  # Plot the center as a red dot
+        ax.plot(center_x, center_y, marker = "o", color = 'darkblue', markersize=5)  
 
     # Set plot labels and legend
     ax.set_title('Solución')

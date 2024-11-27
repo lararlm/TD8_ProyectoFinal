@@ -44,8 +44,8 @@ def check_availability(center, center_size, pads_data, polygon, restrictions, re
     right1 = x + width1 / 2
     top1 = y - height1 / 2
     bottom1 = y + height1 / 2
-    for i in range(len(rectangles)): 
-        for center2 in rectangles[i]:
+    for i in range(len(pads_data)): 
+        for center2 in rectangles:
             width1, height1 = pads_data[i]
             x2, y2 = center2
             left2 = x2 - width1 / 2
@@ -58,6 +58,26 @@ def check_availability(center, center_size, pads_data, polygon, restrictions, re
         
     return True
 
+# def check_rectangles(center, center_size, pads_data, rectangles):
+#     dx, dy = center_size
+#     x, y = center
+#     width1, height1 = center_size
+#     left1 = x - width1 / 2
+#     right1 = x + width1 / 2
+#     top1 = y - height1 / 2
+#     bottom1 = y + height1 / 2
+#     for i in range(len(rectangles)): 
+#         for center2 in rectangles[i]:  
+#             width1, height1 = pads_data[i]
+#             x2, y2 = center2
+#             left2 = x2 - width1 / 2
+#             right2 = x2 + width1 / 2
+#             top2 = y2 - height1 / 2
+#             bottom2 = y2 + height1 / 2
+            
+#             if not (left1 >= right2 or left2 >= right1 or top1 >= bottom2 or top2 >= bottom1):
+#                 return False
+#     return True
 
 def check_rectangles(center, center_size, pads_data, rectangles):
     dx, dy = center_size
@@ -67,8 +87,8 @@ def check_rectangles(center, center_size, pads_data, rectangles):
     right1 = x + width1 / 2
     top1 = y - height1 / 2
     bottom1 = y + height1 / 2
-    for i in range(len(rectangles)): 
-        for center2 in rectangles[i]:
+    for i in range(len(rectangles)): ## solía ser range(len(rectangles))
+        for center2 in rectangles[i]:  ## solía ser for center2 in rectangles[i]
             width1, height1 = pads_data[i]
             x2, y2 = center2
             left2 = x2 - width1 / 2
@@ -80,8 +100,13 @@ def check_rectangles(center, center_size, pads_data, rectangles):
                 return False
     return True
 
-
 def calculate_area(polygon, len_rectangles, panel_size):
+    '''
+        polygon: el poligono xd
+        len_rectangles: es la cantidad de rectangulos en la solucion para cada tipo diferente de rectangulo. ahora por que se llama asi idfk
+        panel_size = los tamaños de los pads xd
+
+    '''
     area_polygon = Polygon(polygon)
     total_area = area_polygon.area
     cover_area = 0
@@ -89,3 +114,12 @@ def calculate_area(polygon, len_rectangles, panel_size):
         len_rects = len_rectangles[i]
         cover_area += panel_size[i][0] * panel_size[i][1] * len_rects
     return cover_area / total_area
+
+# def calculate_area(polygon, rectangles, panel_size):
+#     area_polygon = Polygon(polygon)
+#     total_area = area_polygon.area
+#     cover_area = 0
+#     for rect in rectangles:
+#         actual_size = rect[2]
+#         cover_area += actual_size[0] * actual_size[1]
+#     return cover_area / total_area

@@ -13,7 +13,7 @@ import math
 from shapely.geometry import Point, Polygon 
 from lectura_and_analisis.generacion_mapa import fun_generacion_mapa
 from lectura_and_analisis.xml_parsing import xml_data_extractor
-from lectura_and_analisis.analisis import check_availability
+from lectura_and_analisis.analisis_copy import check_availability
 from heuristicas.grid_heuristic import *
 
 '''
@@ -463,10 +463,6 @@ def gen_algo(pop_size, generations, outer_polygon, restrictions, panel_dimension
             parent1, parent2 = random.sample(best, 2)
             parent1 = relocation(subdivide(parent1, centro), parent1[0][2], outer_polygon, restrictions, center(parent1), panel_dimensions)
             parent2 = relocation(subdivide(parent2, centro), parent2[0][2], outer_polygon, restrictions, center(parent2), panel_dimensions)
-            
-            print("your dad is: ", parent1)
-            print("your mom is: ", parent1)
-            
             child1, child2 = crossover(parent1, parent2)
             #child1_augmented = solver(outer_polygon, child1[0][2], restrictions, child1, panel_dimensions, True)
             child1_mutated = mutate(child1, outer_polygon, restrictions, 1)
@@ -493,7 +489,7 @@ def grid_heuristic(polygon, panel_size, restrictions, rectangles, rand = True):
                 rectangles[i].extend(sub_rectangles)
     return rectangles
 
-polygon = [(10.0, 0.0), (0.0, 16.0), (0.0, 29.0), (12.0, 33.0), (33.0, 33.0), (46.0, 16.0), (46.0, 6.0), (38.0, 0.0), (10.0, 0.0)]
+polygon = xml_data_extractor("TD8\mapas\pol.1s.00.xml")
 restrictions = [[(9.0, 22.0), (9.0, 25.0), (12.0, 28.0), (16.0, 29.0), (17.0, 27.0), (12.0, 23.0), (9.0, 22.0)], [(25.0, 22.0), (27.0, 25.0), (29.0, 27.0), (30.0, 25.0), (27.0, 21.0), (25.0, 22.0)], [(25.0, 22.0), (27.0, 21.0), (29.0, 17.0), (27.5, 15.0), (25.0, 17.0), (25.0, 22.0)], [(16.0, 11.0), (17.0, 13.0), (24.0, 8.0), (27.0, 5.0), (26.0, 4.0), (19.0, 7.0), (16.0, 11.0)]]
 sol, fit = gen_algo(10, 10, polygon,restrictions, [(2, 4)])
 print(calculate_area(polygon, [len(sol)], [(2, 4)]))
