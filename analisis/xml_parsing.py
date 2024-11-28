@@ -41,22 +41,4 @@ def xml_data_extractor(file_path: str):
         # Añadimos a la lista de polígonos obstáculo
         restricciones_data.append(restriccion_vertices)
     
-    return yacimiento_coordinates, semilla_data, restricciones_data, angulo
-
-
-
-
-
-# # # file_path_bony = 'C:/Users/valen/OneDrive/Escritorio/Bony/Di tella/TD8FINAL/TD8_ProyectoFinal/mapas/pol.01.xml'
-# yacimiento_coords, panel_size, restricciones_data , angulo= xml_data_extractor(file_path_lari)
-# print(yacimiento_coords ,panel_size, restricciones_data)
-
-# # print("Yacimiento Coordinates:", yacimiento_coords)
-# # print("Pads Data (Largo, Ancho, Angulo):", panel_size , angulo)
-# # print("Restricciones Data:", restricciones_data)
-
-
-# # rectangles = [[panel_size[0][0], panel_size[0][1], 10 , 15]]
-# rectangles = []
-
-# # print(rectangles)
+    return yacimiento_coordinates, panel_size, restricciones_data, angulo

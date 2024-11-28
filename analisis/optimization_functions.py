@@ -1,4 +1,5 @@
-from lectura_and_analisis.analisis import calculate_area
+from analisis.auxiliar_functions import calculate_area
+
 import random
 from tqdm import tqdm
 
@@ -31,13 +32,4 @@ def optimize_area(opt_func, polygon, rectangles, panel_size, restrictions, minim
 
             
         
-def change_dimensions(polygon,panel_size,restrictions,size_to_change, rectangles= None):
-    new_rectangles = None
-    if rectangles:
-        new_rectangles = [[(x * size_to_change, y * size_to_change) for (x, y) in rectangle] for rectangle in rectangles]
-    new_restrictions = [[(x * size_to_change, y * size_to_change) for (x, y) in restriction] for restriction in restrictions]
-    new_polygon = [(x * size_to_change, y * size_to_change) for (x, y) in polygon]
-    new_panel = [(x * size_to_change, y * size_to_change) for (x, y) in panel_size]
-    return new_polygon,new_panel,new_restrictions,new_rectangles
-
 

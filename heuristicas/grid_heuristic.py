@@ -8,30 +8,34 @@ from shapely.geometry import Point, Polygon
 import sys
 import os
 sys.path.append(os.path.abspath("TD8_ProyectoFinal/"))
-from lectura_and_analisis.analisis import check_rectangles, calculate_area
 import json
 
 def solve(polygon, actual_panel, restrictions, rectangles, panel_size, rand, optimizing):
-    """Search for different offsets to find the solution that maximizes the number of panels."""
+    """
+    polygon: Representacion del mapa como un poligono.
+    actual_panel: Tamaño actual del panel que se esta utilizando para la grilla
+    restrictions: Son las restricciones como coordenadas.
+    rectangles: Son todos los rectangulos que ya estan puestos actualmente en la solución
+    panel_size: Lista de los tamaños disponibles para los rectangulos.
+    rand: True or false para aplicar la aleatoriedad de los movimientos
+    optimizing: True or false para saber si el codigo esta siendo utilizado para optimizacion.
+
+    """
     solution_num = 0
     change = False
     max_panel = 0 
     best_panels, best_array, best_indentation, best_offset_x, best_offset_y, best_centers = None, None, None, None, None, None
 
-    # Use the original polygon without modification
     original_polygon = np.array(polygon)
-
-    # Calculate the bounding box of the original polygon
     min_x = original_polygon[:, 0].min()
     min_y = original_polygon[:, 1].min()
     max_x = original_polygon[:, 0].max()      
     max_y = original_polygon[:, 1].max()
 
-    # Determine grid size based on the bounding box
     n_x = int(max_x // actual_panel[0] + actual_panel[0])
     n_y = int(max_y // actual_panel[1] + actual_panel[1])
 
-    #failsafes
+    # Metodos de failsafe
     counter = 0
     failed_attempts = 0
     output_best =  []
@@ -44,7 +48,6 @@ def solve(polygon, actual_panel, restrictions, rectangles, panel_size, rand, opt
                 counter += 1
                 random_movements = [0,0,0]
                 if failed_attempts == 30 and optimizing:
-                    print("terminating")
                     return best_centers
                 if rand:
                     random_movements = np.random.normal(0,0.2,3)
@@ -66,14 +69,11 @@ def solve(polygon, actual_panel, restrictions, rectangles, panel_size, rand, opt
                     failed_attempts = 0
                 else:
                     failed_attempts += 1
-                    print("attempts = ", failed_attempts)
 
                 if counter % 100 == 0:
-                    print("aparece la solución: ", best_centers)
                     if best_centers not in output_best:
                         output_best.append(best_centers)
                     else:
-                        print("sis u already showed up!")
                         repetitions += 1 
                         if repetitions == 3:
                             return best_centers
@@ -82,10 +82,69 @@ def solve(polygon, actual_panel, restrictions, rectangles, panel_size, rand, opt
 
                 if failed_attempts == 30:
                     break
-                
 
-                
     return  best_centers
+
+def grid_heuristic(polygon, restrictions, panel_size,  rand = True, rectangles = None, optimizing = False):
+    counter = 0
+    if not rectangles:
+        rectangles = [[] for _ in range(len(panel_size))]
+    for i in range(len(panel_size)):
+        improvment = True
+        while improvment:
+            improvment = False
+            actual_panel = panel_size[i]
+            sub_rectangles = solve(polygon,actual_panel,restrictions,rectangles,panel_size,rand, optimizing)
+            if sub_rectangles:
+                counter += 1
+                improvment = True
+                rectangles[i].extend(sub_rectangles)
+                if counter%50==0:
+                    print("POSSIBLE SOLUTION: ", rectangles)
+    return rectangles
+
+## Funciones auxiliares
+
+def contains_rectangle(x, y, panel_size, polygon):
+    (dx, dy) = panel_size
+    bbpath = matplotlib.path.Path(polygon) 
+    result = bbpath.contains_points([(x, y), (x + dx, y), (x, y + dy), (x + dx, y + dy)])
+    return np.all(result)
+
+def check_center(center, restrictions):
+    for rest in restrictions:
+        center_point = Point(center)
+        fig_rest = Polygon(rest)
+        is_in_rest = center_point.within(fig_rest)
+        if is_in_rest:
+            return False
+    return True
+
+def check_rectangles(center, center_size, panel_size, rectangles):
+    dx, dy = center_size
+    x, y = center
+    width1, height1 = center_size
+    left1 = x - width1 / 2
+    right1 = x + width1 / 2
+    top1 = y - height1 / 2
+    bottom1 = y + height1 / 2
+    for i in range(len(rectangles)): 
+        for center2 in rectangles[i]:  
+            width1, height1 = panel_size[i]
+            x2, y2 = center2
+            left2 = x2 - width1 / 2
+            right2 = x2 + width1 / 2
+            top2 = y2 - height1 / 2
+            bottom2 = y2 + height1 / 2
+            
+            if not (left1 >= right2 or left2 >= right1 or top1 >= bottom2 or top2 >= bottom1):
+                return False
+    return True
+
+def contains_rectangles(Array, panel_size, polygon):
+    okay_panels  = [(x, y) for (x, y) in Array if contains_rectangle(x, y, panel_size, polygon)]
+    return okay_panels
+
 
 def generate_panel_arrays(nx, ny, panel_size, indentation, offset_x, offset_y):
     (dx, dy) = panel_size
@@ -94,20 +153,11 @@ def generate_panel_arrays(nx, ny, panel_size, indentation, offset_x, offset_y):
              for j in range(ny)]
     return Array 
 
-def plot_polygon(Points):
-    Xs, Ys = zip(*Points)
-    matplotlib.pyplot.plot(Xs, Ys, 'b')
-    matplotlib.pyplot.plot([Xs[-1], Xs[0]], [Ys[-1], Ys[0]], 'b')
-
 def contains_rectangle(x, y, panel_size, polygon):
     (dx, dy) = panel_size
     bbpath = matplotlib.path.Path(polygon) 
     result = bbpath.contains_points([(x, y), (x + dx, y), (x, y + dy), (x + dx, y + dy)])
     return np.all(result)
-
-def contains_rectangles(Array, panel_size, polygon):
-    okay_panels  = [(x, y) for (x, y) in Array if contains_rectangle(x, y, panel_size, polygon)]
-    return okay_panels
 
 def check_center(center, restrictions):
     for rest in restrictions:
@@ -130,25 +180,5 @@ def check_panels(panels, actual_panel, panel_size, restrictions, rectangles):
             true_centers.append(center)
     return true_panels, true_centers
 
-
-
-def grid_heuristic(polygon, panel_size, restrictions, rand = True, rectangles = None, optimizing = False):
-    counter = 0
-    if not rectangles:
-        rectangles = [[] for _ in range(len(panel_size))]
-    for i in range(len(panel_size)):
-        improvment = True
-        while improvment:
-            improvment = False
-            actual_panel = panel_size[i]
-            sub_rectangles = solve(polygon,actual_panel,restrictions,rectangles,panel_size,rand, optimizing)
-            if sub_rectangles:
-                counter += 1
-                improvment = True
-                print("there is an improvement!")
-                rectangles[i].extend(sub_rectangles)
-                if counter%50==0:
-                    print("POSSIBLE SOLUTION: ", rectangles)
-    return rectangles
     
         
