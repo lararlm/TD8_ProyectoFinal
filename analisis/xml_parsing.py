@@ -1,44 +1,37 @@
 import xml.etree.ElementTree as ET
 
 def xml_data_extractor(file_path: str):
-    
-    # Parsing del archivo XML
+    '''
+    file_path: path del mapa para extraer info.
+
+    Esta funcion toma los archivos XML que tenemos y saca la informacion del yacimiento, los tamaños de los paneles, las restricciones y el angulo de los paneles.
+    '''
+
     tree = ET.parse(file_path)
     root = tree.getroot()
-
-    yacimiento_coordinates = []
-    semilla_data = []
-    restricciones_data = []
+    polygon = []
+    rect_size = []
+    restrictions = []
     angulo = root.find(".//Esfuerzo_horizontal_mínimo").get("Ángulo")
     angulo = float(angulo.replace(",",".")) if angulo else None
-    # Extraemos la información del polígono del yacimiento
     for area in root.findall(".//Área[@Capa='Yacimiento']"):
-        # Extraemos cada vértice del polígono
         for vertice in area.findall(".//Vértice"):
             x = float(vertice.get('X').replace(",", "."))
             y = float(vertice.get('Y').replace(",", "."))
-            # Guardamos las coordenadas en la lista
-            yacimiento_coordinates.append((x, y))
+            polygon.append((x, y))
     
-    # Extraemos la información de los pads (semillas)
     for semilla in root.findall(".//Semilla"):
-        # Extraemos el largo y ancho de cada pad
         for pad in semilla.findall(".//PAD"):
             largo = float(pad.get('Largo').replace(",", "."))
             ancho = float(pad.get('Ancho').replace(",", "."))
-            # Guardamos la información en la lista
-            semilla_data.append((ancho, largo))
+            rect_size.append((ancho, largo))
         
-    # Extraemos la información de los polígonos obstáculo
     for restriccion in root.findall(".//Restricción"):
         restriccion_vertices = []
-        # Extraemos cada vértice del polígono
         for vertice in restriccion.findall(".//Vértice"):
             x = float(vertice.get('X').replace(",", "."))
             y = float(vertice.get('Y').replace(",", "."))
-            # Guardamos las coordenadas en la lista
             restriccion_vertices.append((x, y))
-        # Añadimos a la lista de polígonos obstáculo
-        restricciones_data.append(restriccion_vertices)
+        restrictions.append(restriccion_vertices)
     
-    return yacimiento_coordinates, panel_size, restricciones_data, angulo
+    return polygon, rect_size, restrictions, angulo

@@ -5,10 +5,20 @@ from tqdm import tqdm
 
 import copy
 
-def optimize_area(opt_func, polygon, rectangles, panel_size, restrictions, minimum_rectangles_to_delete = 1, iterations = 100):
+def optimize_area(opt_func, polygon, rectangles, rect_size, restrictions, minimum_rectangles_to_delete = 1, iterations = 100):
+    '''
+    opt_func: funcion que se va a utilizar para la optimizacion
+    polygon: el poligono del mapa
+    rectangles: son los rectangulos de la solucion.
+    rect_size: los tamaños de los paneles
+    restrictions: restricciones del mapa
+    minimum_rectangles_to_delete: cantidad minima de rectangulos a eliminar
+    iterations: cantidad de veces que se hace la busqueda local de eliminar
+
+    Esta funcion es nuestra funcion de optimizacion que elimina rectangulos y llama a la opt_func.
+    '''
     optimal_rectangles = copy.deepcopy(rectangles)
-    len_opt_rectangles = [len(rect) for rect in optimal_rectangles]
-    optimal_area = calculate_area(polygon, len_opt_rectangles, panel_size)
+    optimal_area = calculate_area(polygon, optimal_rectangles, rect_size)
 
     for i in tqdm(range(iterations)):
         temporal_rectangles = copy.deepcopy(optimal_rectangles)
@@ -19,15 +29,12 @@ def optimize_area(opt_func, polygon, rectangles, panel_size, restrictions, minim
             rectangles_to_remove = random.sample(temporal_rectangles[i], number_of_rectangles)
             for rect in rectangles_to_remove:
                 temporal_rectangles[i].remove(rect)
-        temporal_rectangles = opt_func(polygon,panel_size,restrictions,temporal_rectangles, optimizing = True)
-        len_temp_rectangles =  [len(rect) for rect in temporal_rectangles]
-        temporal_area = calculate_area(polygon, len_temp_rectangles,panel_size)
+        temporal_rectangles = opt_func(polygon,restrictions, rect_size, temporal_rectangles, optimizing = True)
+        temporal_area = calculate_area(polygon, temporal_rectangles,rect_size)
         if temporal_area > optimal_area:
             print("Se encontro un mejor posicionamiento con un area total de :", temporal_area)
             optimal_rectangles = temporal_rectangles.copy()
             optimal_area = temporal_area
-        if i%10 == 0:
-            print(optimal_rectangles)
     return optimal_rectangles
 
             

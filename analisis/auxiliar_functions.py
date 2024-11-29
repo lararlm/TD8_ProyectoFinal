@@ -33,11 +33,11 @@ def rotation(polygon, restrictions, angle, rectangles = None, translation_vector
 
 
 
-def calculate_area(polygon, rectangles, panel_size):
+def calculate_area(polygon, rectangles, rect_size):
     '''
         polygon: el poligono del mapa
         rectangles: son los rectangulos de la solucion.
-        panel_size = los tamaños de los paneles
+        rect_size: los tamaños de los paneles
         Esta funcion calcula el porcentaje del area cubierta por los rectangulos en el mapa.
 
     '''
@@ -47,17 +47,17 @@ def calculate_area(polygon, rectangles, panel_size):
     cover_area = 0
     for i in range(len(count_rectangles)):
         count_rects = count_rectangles[i]
-        cover_area += panel_size[i][0] * panel_size[i][1] * count_rects
+        cover_area += rect_size[i][0] * rect_size[i][1] * count_rects
     return cover_area / total_area
 
 
 
-def change_dimensions(polygon,panel_size,restrictions,size_to_change, rectangles= None):
+def change_dimensions(polygon,rect_size,restrictions,size_to_change, rectangles= None):
     new_rectangles = None
     if rectangles:
         new_rectangles = [[(x * size_to_change, y * size_to_change) for (x, y) in rectangle] for rectangle in rectangles]
     new_restrictions = [[(x * size_to_change, y * size_to_change) for (x, y) in restriction] for restriction in restrictions]
     new_polygon = [(x * size_to_change, y * size_to_change) for (x, y) in polygon]
-    new_panel = [(x * size_to_change, y * size_to_change) for (x, y) in panel_size]
+    new_panel = [(x * size_to_change, y * size_to_change) for (x, y) in rect_size]
     return new_polygon,new_panel,new_restrictions,new_rectangles
 
