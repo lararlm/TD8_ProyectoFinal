@@ -25,13 +25,11 @@ def solve(polygon, actual_rect, restrictions, rectangles, rect_size, rand, optim
     change = False
     max_panel = 0 
     best_panels, best_array, best_indentation, best_offset_x, best_offset_y, best_centers = None, None, None, None, None, None
+    mod_polygon = np.array(polygon)
+    max_x = mod_polygon[:, 0].max()      
+    max_y = mod_polygon[:, 1].max()
 
-    original_polygon = np.array(polygon)
-    min_x = original_polygon[:, 0].min()
-    min_y = original_polygon[:, 1].min()
-    max_x = original_polygon[:, 0].max()      
-    max_y = original_polygon[:, 1].max()
-
+    
     n_x = int(max_x // actual_rect[0] + actual_rect[0])
     n_y = int(max_y // actual_rect[1] + actual_rect[1])
 
@@ -54,7 +52,7 @@ def solve(polygon, actual_rect, restrictions, rectangles, rect_size, rand, optim
                 real_id = indentation + random_movements[2]
                 change = False
                 Array = generate_panel_arrays(n_x, n_y, actual_rect, real_id, real_offset_x, real_offset_y)
-                okay_panels = contains_rectangles(Array, actual_rect, original_polygon)
+                okay_panels = contains_rectangles(Array, actual_rect, polygon)
                 okay_panels, okay_centers = check_panels(okay_panels, actual_rect, rect_size, restrictions,rectangles)
                 if len(okay_panels) == max_panel:
                     change = random.choices([True,False],[6,94])
@@ -80,7 +78,7 @@ def solve(polygon, actual_rect, restrictions, rectangles, rect_size, rand, optim
 
                 if failed_attempts == 30:
                     break
-
+    
     return  best_centers
 
 def grid_heuristic(polygon, restrictions, rect_size,  rand = True, rectangles = None, optimizing = False):

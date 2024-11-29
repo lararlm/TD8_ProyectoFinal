@@ -6,7 +6,18 @@ import matplotlib.patches
 import math
 from shapely.geometry import Point, Polygon 
 
-def rotation(polygon, restrictions, angle, rectangles = None, translation_vector = None):
+def rotation(polygon, restrictions, angle = 0, rectangles = None, translation_vector = None):
+    '''
+        polygon: el poligono del mapa
+        restrictions: Son las restricciones como coordenadas.
+        angle: angulo de rotacion
+        rectangles: rectangulos presentes en la solucion
+        translation_vector: vector de translacion
+    
+    Esta funcion normaliza el poligono, las restricciones y los rectangulos y luego los rota a cierto angulo
+
+
+    '''
     angle_rad = math.radians(angle)
     rotation_matrix = np.array([[math.cos(angle_rad), -math.sin(angle_rad)], 
                                 [math.sin(angle_rad), math.cos(angle_rad)]])
@@ -30,6 +41,7 @@ def rotation(polygon, restrictions, angle, rectangles = None, translation_vector
         return rotated_polygon, rotated_restrictions_total, rectangles_rot, translation_vector
     
     return rotated_polygon, rotated_restrictions_total, translation_vector
+
 
 
 

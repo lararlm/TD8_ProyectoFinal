@@ -34,8 +34,8 @@ def plot_solution(polygon, restrictions, rectangles, rect_size, rect_color = "da
     centers = []
     for i, rect in enumerate(placed_rectangles):
         x, y = rect.exterior.xy
-        ax.plot(x, y, color='darkblue', alpha=0.7, linewidth=2, solid_capstyle='round', label=f'Máquinas de extracción' if i == 0 else "")
-        ax.fill(x, y, color='darkblue', alpha=0.3)
+        ax.plot(x, y, color=rect_color, alpha=0.7, linewidth=2, solid_capstyle='round', label=f'Máquinas de extracción' if i == 0 else "")
+        ax.fill(x, y, color=rect_color, alpha=0.3)
 
         # Calculate the center point of the rectangle
         center_x = rect.centroid.x
