@@ -47,34 +47,6 @@ Each heuristic was designed to balance computational efficiency and solution qua
   - Combine and mutate solutions to create new generations.
 - **Limitations:** Computationally intensive with suboptimal results in this context.
 
----
-
-### Results
-
-| Heuristic         | Optimized Coverage (%) | Notes                                  |
-|--------------------|------------------------|----------------------------------------|
-| Grid-Based         | 81.59                 | Effective for irregular terrains       |
-| Painting Approach  | 84.41                 | Best for rectangular layouts           |
-| Genetic Algorithm  | N/A                   | Requires further refinement            |
-
----
-
-### How to Run
-
-1. Clone this repository:
-   ```bash
-   git clone https://github.com/your_username/drainage-optimization
-   ```
-2. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-3. Run the main script with example data:
-   ```bash
-   python main.py
-   ```
-
----
 
 ### Future Work
 
